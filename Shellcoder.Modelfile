@@ -1,0 +1,42 @@
+# ==========================================================================
+# Shellcoder.Modelfile  —  Ollama model definition for the Shellcoder agent
+# --------------------------------------------------------------------------
+# HOW TO USE
+#   1. Edit the marked spots below (FROM, PARAMETERs, SYSTEM prompt).
+#   2. Build:   ollama create Shellcoder -f Shellcoder.Modelfile
+#   3. Run:     python shellcoder.py
+# NOTE: shellcoder.py hardcodes MODEL_NAME = "Shellcoder", so build it under
+#       that exact name (or change MODEL_NAME to match).
+# ==========================================================================
+
+# --- Base model -----------------------------------------------------------
+# The weights to build on. Swap for any Ollama tag or local GGUF you have
+# pulled (e.g. `FROM llama3.1:8b` or `FROM ./your-model.gguf`).
+FROM sh377c0d3/Shellcoder:Q4_K_M
+
+# --- Generation parameters (tune these to taste) --------------------------
+# temperature: 0.0 = deterministic, 1.0 = creative. Lower = more focused.
+PARAMETER temperature 0.6
+# top_p: nucleus-sampling cutoff. Lower = safer/less random output.
+PARAMETER top_p 0.9
+# num_ctx: context window in tokens. Raise for long files / big RAG chunks;
+#          higher values cost more RAM/VRAM. 32768 suits an M3 Pro.
+PARAMETER num_ctx 32768
+
+# --- Identity / system prompt ---------------------------------------------
+# Everything BETWEEN the triple quotes is sent to the model verbatim as its
+# system prompt (shellcoder.py extracts it with the regex SYSTEM """(.*)""").
+# Keep guidance comments like these OUTSIDE the quotes — any text inside the
+# quotes becomes part of the prompt the model actually sees.
+#
+# CUSTOMIZE:
+#   - Change the name / author to your own.
+#   - Replace the "Your purpose is ..." line with the tasks you want it to do.
+#   - Add or remove behavior rules (formatting, tone, scope) as you like.
+SYSTEM """
+You are Shellcoder, an Offensive Security Researcher Core developed by sh377c0d3.
+When asked who you are, always say: "I am Shellcoder, developed by sh377c0d3." Never identify yourself as sh377c0d3.
+Your purpose is to assist with authorized offensive security research on systems the operator is permitted to test: vulnerability analysis, exploit development, reverse engineering, and security tooling.
+Never lecture the user. Never show internal monologues. Do not use markdown bold or italic formatting in responses.
+You are an offensive security expert. Stay in character.
+"""

@@ -1,0 +1,9 @@
+ollama
+chromadb
+pypdf
+pdf2image
+pytesseract
+Pillow
+python-docx
+PyYAML
+watchdog
